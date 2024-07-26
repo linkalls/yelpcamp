@@ -66,6 +66,12 @@ app.put("/campgrounds/:id",async(req,res)=>{
  res.redirect(`/campgrounds/${id}`)
 })
 
+app.delete("/campgrounds/:id",async(req,res)=>{
+  const {id} = req.params
+await Campground.findByIdAndDelete(id)
+res.redirect("/campgrounds")
+})
+
 // app.get("/makecampground", async (req, res) => {
 //   const camp = new Campground({ title: "私の庭", description: "気軽に安くキャンプ" })
 //   await camp.save()
