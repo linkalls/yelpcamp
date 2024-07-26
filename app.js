@@ -4,7 +4,7 @@ const path = require("path")
 const mongoose = require("mongoose")
 const Campground = require("./models/campground") //* 大文字ね
 const methodOverride = require("method-override")
-const campground = require("./models/campground")
+
 
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
