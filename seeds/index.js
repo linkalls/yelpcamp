@@ -30,4 +30,7 @@ const seedDb = async () => {
   // await c.save()
 }
 
-seedDb()
+seedDb() //* promise帰ってくる
+.then(()=>{
+mongoose.connection.close() //* これで止められる
+})
