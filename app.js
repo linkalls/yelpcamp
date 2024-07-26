@@ -3,6 +3,7 @@ const app = express()
 const path = require("path")
 const mongoose = require("mongoose")
 const Campground = require("./models/campground") //* 大文字ね
+const methodOverride = require("method-override")
 const campground = require("./models/campground")
 
 mongoose
@@ -18,6 +19,8 @@ mongoose
 
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "ejs")
+app.use(express.urlencoded()) //* formからのpost ミドルウェア
+app.use(methodOverride("_method"))
 
 app.get("/", (req, res) => {
   res.render("home")
@@ -28,10 +31,39 @@ app.get("/campgrounds",async(req,res)=>{
 res.render("campgrounds/index",{campgrounds})
 })
 
+app.get("/campgrounds/new",(req,res)=>{
+  res.render("campgrounds/new")
+})
+
+app.post("/campgrounds",async (req,res)=>{
+  const campground = new Campground(req.body.campground)
+  await campground.save()
+  console.log(campground)
+  res.redirect(`/campgrounds/${campground._id}`)
+// res.send(req.body)  {
+//   "campground": {
+//   "title": "aqa",
+//   "location": "qaa"
+//   }
+//   }
+})
+
 app.get("/campgrounds/:id",async(req,res)=>{
   const {id} = req.params
 const campground = await Campground.findById(id)
   res.render("campgrounds/show",{campground})
+})
+
+app.get("/campgrounds/:id/edit",async(req,res)=>{
+  const {id} = req.params
+const campground = await Campground.findById(id)
+  res.render("campgrounds/edit",{campground})
+})
+
+app.put("/campgrounds/:id",async(req,res)=>{
+ const {id} = req.params
+ const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground}) //* スプレッド
+ res.redirect(`/campgrounds/${id}`)
 })
 
 // app.get("/makecampground", async (req, res) => {

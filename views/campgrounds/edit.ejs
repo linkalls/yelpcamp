@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>キャンプ場編集</title>
+  </head>
+  <body>
+    <h1>キャンプ場編集</h1>
+    <form action="/campgrounds/<%= campground._id %>?_method=put" method="post">
+      <div>
+        <label for="title">タイトル</label>
+        <input type="text" name="campground[title]" id="title" placeholder="タイトル" value="<%= campground.title %>"/>
+        <!--  name="campground[title]"はcampgroundの中のtitle -->
+      </div>
+      <div>
+        <label for="location">場所</label>
+        <input type="text" name="campground[location]" id="location" placeholder="場所" value="<%= campground.location %>"/>
+      </div>
+      <button>編集する</button>
+    </form>
+    <a href="/campgrounds">一覧に戻る</a>
+  </body>
+</html>

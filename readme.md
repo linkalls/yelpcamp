@@ -1,1 +1,1 @@
-npm i express mongoose@5 ejs
+npm i express mongoose@5 ejs method-override
