@@ -6,6 +6,8 @@ const mongoose = require("mongoose")
 const Campground = require("./models/campground") //* 大文字ね
 const methodOverride = require("method-override")
 const engine = require("ejs-mate")
+const ExpressError = require("./utils/ExpressError.js")
+
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
     useNewUrlParser: true,
@@ -28,10 +30,13 @@ app.get("/", (req, res) => {
   res.render("home")
 })
 
-app.get("/campgrounds", catchAsync(async (req, res) => {
-  const campgrounds = await Campground.find({})
-  res.render("campgrounds/index", { campgrounds })
-}))
+app.get(
+  "/campgrounds",
+  catchAsync(async (req, res) => {
+    const campgrounds = await Campground.find({})
+    res.render("campgrounds/index", { campgrounds })
+  })
+)
 
 app.get("/campgrounds/new", (req, res) => {
   res.render("campgrounds/new")
@@ -40,6 +45,9 @@ app.get("/campgrounds/new", (req, res) => {
 app.post(
   "/campgrounds",
   catchAsync(async (req, res) => {
+    if (!req.body.Campground) {
+      throw new ExpressError("不正なキャンプ場のデータです", 400)
+    }
     const campground = new Campground(req.body.campground)
     await campground.save()
     console.log(campground)
@@ -53,41 +61,54 @@ app.post(
   })
 )
 
-app.get("/campgrounds/:id", catchAsync(async (req, res) => {
-  const { id } = req.params
-  const campground = await Campground.findById(id)
-  res.render("campgrounds/show", { campground })
-}))
+app.get(
+  "/campgrounds/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params
+    const campground = await Campground.findById(id)
+    res.render("campgrounds/show", { campground })
+  })
+)
 
-app.get("/campgrounds/:id/edit", catchAsync(async (req, res) => {
-  const { id } = req.params
-  const campground = await Campground.findById(id)
-  res.render("campgrounds/edit", { campground })
-}))
+app.get(
+  "/campgrounds/:id/edit",
+  catchAsync(async (req, res) => {
+    const { id } = req.params
+    const campground = await Campground.findById(id)
+    res.render("campgrounds/edit", { campground })
+  })
+)
 
-app.put("/campgrounds/:id", catchAsync(async (req, res) => {
-  const { id } = req.params
-  const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
-  res.redirect(`/campgrounds/${id}`)
-}))
+app.put(
+  "/campgrounds/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
+    res.redirect(`/campgrounds/${id}`)
+  })
+)
 
-app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
-  const { id } = req.params
-  await Campground.findByIdAndDelete(id)
-  res.redirect("/campgrounds")
-}))
+app.delete(
+  "/campgrounds/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params
+    await Campground.findByIdAndDelete(id)
+    res.redirect("/campgrounds")
+  })
+)
 
 // app.get("/makecampground", async (req, res) => {
 //   const camp = new Campground({ title: "私の庭", description: "気軽に安くキャンプ" })
 //   await camp.save()
 //   res.send(camp)
 // })
-app.all("*",(req,res,next)=>{
-  res.send("404!!!!")
+app.all("*", (req, res, next) => {
+  next(new ExpressError("ページが見つからなかったよ", 404)) //* エラーハンドラーに任せる
 })
 
 app.use((err, req, res, next) => {
-  res.send("ここで問題が起きたよ")
+  const { statusCode = 500, message = "何か問題が発生しました" } = err //* 上でのエラーがerrに入ってる
+  res.status(statusCode).send(message)
 })
 
 app.listen(3000, () => {
