@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>キャンプ場新規登録</title>
-  </head>
-  <body>
-    <form action="/campgrounds" method="post">
-      <div>
-        <label for="title">タイトル</label>
-        <input type="text" name="campground[title]" id="title" placeholder="タイトル" />
-        <!--  name="campground[title]"はcampgroundの中のtitle -->
-      </div>
-      <div>
-        <label for="location">場所</label>
-        <input type="text" name="campground[location]" id="location" placeholder="場所" />
-      </div>
-      <button>登録する</button>
-    </form>
-    <a href="/campgrounds">一覧に戻る</a>
-  </body>
-</html>
+<% layout("/layouts/boilerplate") %>
+
+<form action="/campgrounds" method="post">
+  <div>
+    <label for="title">タイトル</label>
+    <input type="text" name="campground[title]" id="title" placeholder="タイトル" />
+    <!--  name="campground[title]"はcampgroundの中のtitle -->
+  </div>
+  <div>
+    <label for="location">場所</label>
+    <input type="text" name="campground[location]" id="location" placeholder="場所" />
+  </div>
+  <button>登録する</button>
+</form>

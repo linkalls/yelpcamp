@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>キャンプ場詳細</title>
-  </head>
-  <body>
+<% layout("/layouts/boilerplate") %>
+
     <h1><%= campground.title %></h1>
     <h2><%= campground.location %></h2>
     <p><a href="/campgrounds/<%= campground._id %>/edit">編集する</a></p>
@@ -17,5 +11,4 @@
     <footer>
       <a href="/campgrounds">一覧に戻る</a>
     </footer>
-  </body>
-</html>
+
