@@ -24,7 +24,7 @@ const seedDb = async () => {
     const camp = new Campground({
       location: `${cities[randomCityIndex].prefecture}${cities[randomCityIndex].city}`, //* location: '茨城県石岡市',
       title: `${sample(descriptors)}・${sample(places)}`, //* []やなくて()だよ
-      img: "https://picsum.photos/800",
+      image: "https://picsum.photos/800",
       description:
         "ぼく飛びおりて、あいつをとって、またくるくると包んで紐でくくりました。すこしたべてごらんなさい鳥捕りは、こっちに向き直りました。またこれを巨きな乳の流れたあとだと言われたりしているうちに、ぴたっと押えちまうんです。そしてきゅうくつな上着の肩を気にしながら、声もなくかたちもなく音もない水にかこまれて、ほんとうにこんや遠くへ行ったようにぶっきらぼうに言いました。川上の方を見ると、一人のせいの高い子供が、窓から外を見ていました。",
       // price: price //* 省略表記で書く

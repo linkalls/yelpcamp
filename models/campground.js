@@ -3,7 +3,7 @@ const Schema = mongoose.Schema // この行を修正しました
 
 const campgroundSchema = new Schema({
   title: String,
-  img: String,
+  image: String,
   price: Number,
   description: String,
   location: String,
