@@ -27,6 +27,24 @@ app.set("view engine", "ejs")
 app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
 
+const validateCampground = (req, res, next) => {
+  //* これはミドルウェアね
+  const campgroundSchema = Joi.object({
+    campground: Joi.object({
+      title: Joi.string().required(),
+      price: Joi.number().required().min(0),
+    }).required(), //* という名前のあるキーを期待
+  })
+  const { error } = campgroundSchema.validate(req.body)
+  console.log(error.message)
+  if (error) {
+    const msg = error.details.map((detail) => detail.message).join(",")
+    throw new ExpressError(msg, 400)
+  } else {
+    next()
+  }
+}
+
 app.get("/", (req, res) => {
   res.render("home")
 })
@@ -44,20 +62,8 @@ app.get("/campgrounds/new", (req, res) => {
 })
 
 app.post(
-  "/campgrounds",
+  "/campgrounds",validateCampground,
   catchAsync(async (req, res) => {
-    const campgroundSchema = Joi.object({
-      campground: Joi.object({
-        title: Joi.string().required(),
-        price: Joi.number().required().min(0),
-      }).required(), //* という名前のあるキーを期待
-    })
-    const { error } = campgroundSchema.validate(req.body)
-    console.log(error.message)
-    if (error) {
-      const msg = error.details.map((detail) => detail.message).join(",")
-      throw new ExpressError(msg, 400)
-    }
     // if (!req.body.Campground) {
     //   throw new ExpressError("不正なキャンプ場のデータです", 400) //* これはキーがあるかどうかだけ見てる
     // }
@@ -93,7 +99,7 @@ app.get(
 )
 
 app.put(
-  "/campgrounds/:id",
+  "/campgrounds/:id",validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
