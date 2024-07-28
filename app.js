@@ -50,10 +50,14 @@ app.post(
       campground: Joi.object({
         title: Joi.string().required(),
         price: Joi.number().required().min(0),
-      }).required() //* という名前のあるキーを期待
+      }).required(), //* という名前のあるキーを期待
     })
-    const result = campgroundSchema.validate(req.body)  
-    console.log(result)
+    const { error } = campgroundSchema.validate(req.body)
+    console.log(error.message)
+    if (error) {
+      const msg = error.details.map((detail) => detail.message).join(",")
+      throw new ExpressError(msg, 400)
+    }
     // if (!req.body.Campground) {
     //   throw new ExpressError("不正なキャンプ場のデータです", 400) //* これはキーがあるかどうかだけ見てる
     // }
