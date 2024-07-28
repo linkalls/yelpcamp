@@ -5,6 +5,7 @@ const catchAsync = require("./utils/catchAsync.js")
 const mongoose = require("mongoose")
 const Campground = require("./models/campground") //* 大文字ね
 const methodOverride = require("method-override")
+const Joi = require("joi")
 const engine = require("ejs-mate")
 const ExpressError = require("./utils/ExpressError.js")
 
@@ -45,9 +46,17 @@ app.get("/campgrounds/new", (req, res) => {
 app.post(
   "/campgrounds",
   catchAsync(async (req, res) => {
-    if (!req.body.Campground) {
-      throw new ExpressError("不正なキャンプ場のデータです", 400)
-    }
+    const campgroundSchema = Joi.object({
+      campground: Joi.object({
+        title: Joi.string().required(),
+        price: Joi.number().required().min(0),
+      }).required() //* という名前のあるキーを期待
+    })
+    const result = campgroundSchema.validate(req.body)  
+    console.log(result)
+    // if (!req.body.Campground) {
+    //   throw new ExpressError("不正なキャンプ場のデータです", 400) //* これはキーがあるかどうかだけ見てる
+    // }
     const campground = new Campground(req.body.campground)
     await campground.save()
     console.log(campground)
@@ -108,10 +117,10 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "何か問題が発生しました" } = err //* 上でのエラーがerrに入ってる
-  if(!err.message) {
+  if (!err.message) {
     err.message = "問題が起こったよ"
   }
-  res.status(statusCode).render("error",{err}) //errオブジェクトそのまま
+  res.status(statusCode).render("error", { err }) //errオブジェクトそのまま
 })
 
 app.listen(3000, () => {
