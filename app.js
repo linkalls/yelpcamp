@@ -5,9 +5,9 @@ const catchAsync = require("./utils/catchAsync.js")
 const mongoose = require("mongoose")
 const Campground = require("./models/campground") //* 大文字ね
 const methodOverride = require("method-override")
-const Joi = require("joi")
 const engine = require("ejs-mate")
 const ExpressError = require("./utils/ExpressError.js")
+const {campgroundSchema} = require("./schemas")
 
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
@@ -27,14 +27,14 @@ app.set("view engine", "ejs")
 app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
 
-const validateCampground = (req, res, next) => {
+const validateCampground = (req, res, next) => { //* app.useじゃないよ
   //* これはミドルウェアね
-  const campgroundSchema = Joi.object({
-    campground: Joi.object({
-      title: Joi.string().required(),
-      price: Joi.number().required().min(0),
-    }).required(), //* という名前のあるキーを期待
-  })
+  // const campgroundSchema = Joi.object({
+  //   campground: Joi.object({
+  //     title: Joi.string().required(),
+  //     price: Joi.number().required().min(0),
+  //   }).required(), //* という名前のあるキーを期待
+  // })
   const { error } = campgroundSchema.validate(req.body)
   console.log(error.message)
   if (error) {
