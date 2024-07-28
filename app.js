@@ -108,7 +108,10 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "何か問題が発生しました" } = err //* 上でのエラーがerrに入ってる
-  res.status(statusCode).send(message)
+  if(!err.message) {
+    err.message = "問題が起こったよ"
+  }
+  res.status(statusCode).render("error",{err}) //errオブジェクトそのまま
 })
 
 app.listen(3000, () => {
