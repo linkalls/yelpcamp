@@ -5,6 +5,7 @@ const ExpressError = require("../utils/ExpressError")
 const Campground = require("../models/campground")
 const { campgroundSchema } = require("../schemas")
 
+
 const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body)
   if (error) {
