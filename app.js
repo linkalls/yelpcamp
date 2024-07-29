@@ -7,7 +7,7 @@ const Campground = require("./models/campground") //* 大文字ね
 const methodOverride = require("method-override")
 const engine = require("ejs-mate")
 const ExpressError = require("./utils/ExpressError.js")
-const { campgroundSchema } = require("./schemas")
+const { campgroundSchema, reviewSchema } = require("./schemas")
 const Review = require("./models/review")
 const review = require("./models/review")
 
@@ -40,6 +40,17 @@ const validateCampground = (req, res, next) => {
   // })
   const { error } = campgroundSchema.validate(req.body)
   console.log(error.message)
+  if (error) {
+    const msg = error.details.map((detail) => detail.message).join(",")
+    throw new ExpressError(msg, 400)
+  } else {
+    next()
+  }
+}
+
+const validateReview = (req, res, next) => {
+  //* ミドルウェア
+  const { error } = reviewSchema.validate(req.body) //* validatedじゃないよ
   if (error) {
     const msg = error.details.map((detail) => detail.message).join(",")
     throw new ExpressError(msg, 400)
@@ -123,6 +134,7 @@ app.delete(
 
 app.post(
   "/campgrounds/:id/reviews",
+  validateReview,
   catchAsync(async (req, res) => {
     // res.send(req.body)
     const campground = await Campground.findById(req.params.id)
