@@ -1,12 +1,10 @@
 const express = require("express")
 const app = express()
 const path = require("path")
-const catchAsync = require("./utils/catchAsync.js")
 const mongoose = require("mongoose")
 const methodOverride = require("method-override")
 const engine = require("ejs-mate")
 const ExpressError = require("./utils/ExpressError.js")
-const { campgroundSchema, reviewSchema } = require("./schemas")
 
 const campgroundRouter = require("./routes/campground")
 const reviewRouter = require("./routes/reviews")
@@ -28,15 +26,15 @@ app.set("view engine", "ejs")
 
 app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
-
+app.use(express.static(path.join(__dirname, "public")))
 
 app.get("/", (req, res) => {
   res.render("home")
 })
 
-app.use("/campgrounds",campgroundRouter)
+app.use("/campgrounds", campgroundRouter)
 
-app.use("/campgrounds/:id/reviews",reviewRouter) //: ここで定義したパラメーターは明示的に
+app.use("/campgrounds/:id/reviews", reviewRouter) //: ここで定義したパラメーターは明示的に
 
 // app.get("/makecampground", async (req, res) => {
 //   const camp = new Campground({ title: "私の庭", description: "気軽に安くキャンプ" })
