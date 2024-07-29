@@ -1,6 +1,6 @@
 const { number } = require("joi")
 const mongoose = require("mongoose")
-const { schema } = mongoose
+const { Schema } = mongoose
 
 const reviewSchema = new Schema(
   {

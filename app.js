@@ -7,7 +7,9 @@ const Campground = require("./models/campground") //* 大文字ね
 const methodOverride = require("method-override")
 const engine = require("ejs-mate")
 const ExpressError = require("./utils/ExpressError.js")
-const {campgroundSchema} = require("./schemas")
+const { campgroundSchema } = require("./schemas")
+const Review = require("./models/review")
+const review = require("./models/review")
 
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
@@ -27,7 +29,8 @@ app.set("view engine", "ejs")
 app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
 
-const validateCampground = (req, res, next) => { //* app.useじゃないよ
+const validateCampground = (req, res, next) => {
+  //* app.useじゃないよ
   //* これはミドルウェアね
   // const campgroundSchema = Joi.object({
   //   campground: Joi.object({
@@ -62,7 +65,8 @@ app.get("/campgrounds/new", (req, res) => {
 })
 
 app.post(
-  "/campgrounds",validateCampground,
+  "/campgrounds",
+  validateCampground,
   catchAsync(async (req, res) => {
     // if (!req.body.Campground) {
     //   throw new ExpressError("不正なキャンプ場のデータです", 400) //* これはキーがあるかどうかだけ見てる
@@ -99,7 +103,8 @@ app.get(
 )
 
 app.put(
-  "/campgrounds/:id",validateCampground,
+  "/campgrounds/:id",
+  validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
@@ -113,6 +118,19 @@ app.delete(
     const { id } = req.params
     await Campground.findByIdAndDelete(id)
     res.redirect("/campgrounds")
+  })
+)
+
+app.post(
+  "/campgrounds/:id/reviews",
+  catchAsync(async (req, res) => {
+    // res.send(req.body)
+    const campground = await Campground.findById(req.params.id)
+    const review = new Review(req.body.review) //* 大文字
+    campground.reviews.push(review)
+    await review.save()
+    await campground.save()
+    res.redirect(`/campgrounds/${campground._id}`)
   })
 )
 
