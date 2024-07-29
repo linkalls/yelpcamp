@@ -49,6 +49,7 @@ app.use(flash())
 
 app.use((req,res,next)=>{
   res.locals.success = req.flash("success") //* これを使うと一回のリクエスト内で使える変数を一時的に保存　テンプレートから使えるnext()
+  res.locals.error = req.flash("error")
   next()
 })
 
