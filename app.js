@@ -149,7 +149,10 @@ app.post(
 app.delete(
   "/campgrounds/:id/reviews/:reviewId",
   catchAsync(async (req, res) => {
-    res.send("削除")
+    const { id, reviewId } = req.params
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }) //* 特定のcampgroundの中でreviewsIdと一致しているreviewsを削除
+    await Review.findByIdAndDelete(reviewId)
+    res.redirect(`/campgrounds/${id}`)
   })
 )
 
