@@ -146,6 +146,13 @@ app.post(
   })
 )
 
+app.delete(
+  "/campgrounds/:id/reviews/:reviewId",
+  catchAsync(async (req, res) => {
+    res.send("削除")
+  })
+)
+
 // app.get("/makecampground", async (req, res) => {
 //   const camp = new Campground({ title: "私の庭", description: "気軽に安くキャンプ" })
 //   await camp.save()
