@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const Schema = mongoose.Schema // この行を修正しました
+const {Schema} = mongoose.Schema // この行を修正しました
 
 const campgroundSchema = new Schema({
   title: String,

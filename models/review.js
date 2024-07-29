@@ -1,0 +1,12 @@
+const { number } = require("joi")
+const mongoose = require("mongoose")
+const { schema } = mongoose
+
+const reviewSchema = new Schema(
+  {
+    body: String,
+    rating: Number
+  }
+)
+
+module.exports = mongoose.model("Review",reviewSchema)
