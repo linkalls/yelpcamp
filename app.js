@@ -10,6 +10,7 @@ const campgroundRouter = require("./routes/campground")
 const reviewRouter = require("./routes/reviews")
 
 const session = require("express-session")
+const flash = require("connect-flash")
 
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
@@ -42,6 +43,14 @@ const sessionConfig = {
 }
 
 app.use(session(sessionConfig))
+
+app.use(flash())
+
+
+app.use((req,res,next)=>{
+  res.locals.success = req.flash("success") //* これを使うと一回のリクエスト内で使える変数を一時的に保存　テンプレートから使えるnext()
+  next()
+})
 
 app.get("/", (req, res) => {
   res.render("home")
