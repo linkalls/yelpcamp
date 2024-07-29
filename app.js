@@ -9,11 +9,14 @@ const ExpressError = require("./utils/ExpressError.js")
 const campgroundRouter = require("./routes/campground")
 const reviewRouter = require("./routes/reviews")
 
+const session = require("express-session")
+
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then(() => {
     console.log("接続ok")
@@ -27,6 +30,18 @@ app.set("view engine", "ejs")
 app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
 app.use(express.static(path.join(__dirname, "public")))
+
+const sessionConfig = {
+  secret: "mysecret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+}
+
+app.use(session(sessionConfig))
 
 app.get("/", (req, res) => {
   res.render("home")
