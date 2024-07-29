@@ -9,7 +9,7 @@ const engine = require("ejs-mate")
 const ExpressError = require("./utils/ExpressError.js")
 const { campgroundSchema, reviewSchema } = require("./schemas")
 const Review = require("./models/review")
-const review = require("./models/review")
+const campgroundsRouter = require("./routes/campground")
 
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
@@ -63,74 +63,7 @@ app.get("/", (req, res) => {
   res.render("home")
 })
 
-app.get(
-  "/campgrounds",
-  catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({})
-    res.render("campgrounds/index", { campgrounds })
-  })
-)
-
-app.get("/campgrounds/new", (req, res) => {
-  res.render("campgrounds/new")
-})
-
-app.post(
-  "/campgrounds",
-  validateCampground,
-  catchAsync(async (req, res) => {
-    // if (!req.body.Campground) {
-    //   throw new ExpressError("不正なキャンプ場のデータです", 400) //* これはキーがあるかどうかだけ見てる
-    // }
-    const campground = new Campground(req.body.campground)
-    await campground.save()
-    console.log(campground)
-    res.redirect(`/campgrounds/${campground._id}`)
-    // res.send(req.body)  {
-    //   "campground": {
-    //   "title": "aqa",
-    //   "location": "qaa"
-    //   }
-    //   }
-  })
-)
-
-app.get(
-  "/campgrounds/:id",
-  catchAsync(async (req, res) => {
-    const { id } = req.params
-    const campground = await Campground.findById(id).populate("reviews")
-    res.render("campgrounds/show", { campground })
-  })
-)
-
-app.get(
-  "/campgrounds/:id/edit",
-  catchAsync(async (req, res) => {
-    const { id } = req.params
-    const campground = await Campground.findById(id)
-    res.render("campgrounds/edit", { campground })
-  })
-)
-
-app.put(
-  "/campgrounds/:id",
-  validateCampground,
-  catchAsync(async (req, res) => {
-    const { id } = req.params
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
-    res.redirect(`/campgrounds/${id}`)
-  })
-)
-
-app.delete(
-  "/campgrounds/:id",
-  catchAsync(async (req, res) => {
-    const { id } = req.params
-    await Campground.findByIdAndDelete(id)
-    res.redirect("/campgrounds")
-  })
-)
+app.use("/campgrounds",campgroundsRouter)
 
 app.post(
   "/campgrounds/:id/reviews",
