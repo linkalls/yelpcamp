@@ -10,9 +10,9 @@ router
   .route("/")
   .get(catchAsync(campgrounds.index)) // パスを指定しない
   // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
-.post(upload.single("image"),(req,res)=>{
+.post(upload.array("image"),(req,res)=>{
   console.log(req.body) //* url-encodedにしてたから　{}
-  console.log(req.file)
+  console.log(req.files)
   res.send("受け付けました")
 })
 
