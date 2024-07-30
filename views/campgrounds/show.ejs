@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/stylesheets/star.css" />
 <div class="row">
   <div class="col-6">
-    <div id="campgroundCarousel" class="carousel slide">
+    <div id="carouselExample" class="carousel slide">
       <div class="carousel-inner">
         <% campground.images.forEach((img,index) => { %>
         <div class="carousel-item <%= index === 0 ? "active" : "" %>">
@@ -40,6 +40,7 @@
     </div>
   </div>
   <div class="col-6">
+    <div id='map' style='width: 400px; height: 300px;'></div>
     <h2>レビュー</h2>
     <% if (currentUser) { %>
     <form action="/campgrounds/<%= campground._id %>/reviews" method="post" class="mb-3 validated-form" novalidate>
@@ -82,3 +83,14 @@
     <% } %>
   </div>
 </div>
+
+
+<script>
+  mapboxgl.accessToken = "<%= process.env.MAPBOX_TOKEN %>";
+  const map = new mapboxgl.Map({
+    container: 'map', // container ID
+    style: 'mapbox://styles/mapbox/streets-v12', // style URL
+    center: [-74.5, 40], // starting position [lng, lat]
+    zoom: 9, // starting zoom
+  });
+  </script>
