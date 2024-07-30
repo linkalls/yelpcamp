@@ -29,10 +29,9 @@ module.exports.showCampground = async (req, res) => {
 }
 
 module.exports.createCampground = async (req, res) => {
-
   const campground = new Campground(req.body.campground)
   // console.log(req.user._id)
- campground.images = req.files.map((f) => ({url: f.path,filename: f.filename}))
+  campground.images = req.files.map((f) => ({ url: f.path, filename: f.filename }))
   campground.author = req.user._id
   await campground.save()
   // console.log(campground)
@@ -53,10 +52,13 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateCampground = async (req, res) => {
   const { id } = req.params
   const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
-  const imgs = req.files.map((f) => ({url: f.path,filename: f.filename}))
+  const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }))
   campground.images.push(...imgs) //* pushで配列そのままは無理
   // console.log(...imgs)
- await campground.save()
+  await campground.save()
+  if (req.body.deleteImages) {
+    await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } }) //* imagesのなかでfilenameがreq.body.deleteImagesの中と一致するものを取り除く
+  }
   req.flash("success", "キャンプ場を更新しました")
   res.redirect(`/campgrounds/${campground._id}`)
 }
