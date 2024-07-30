@@ -10,6 +10,16 @@ const userSchema = new Schema({
   },
 })
 
-userSchema.plugin(passportLocalMongoose) //* passportLocalMongooseの機能がスキーマに組みこまれる
+userSchema.plugin(passportLocalMongoose, {
+  errorMessages: {
+    UserExistsError: "そのユーザー名は既に使われています",
+    UserExistsError: "パスワードを入力してください",
+    AttemptTooSoonError:"アカウントがロックされています。時間を空けて再度お試しください",
+    TooManyAttemptsError: "ログイン失敗が続いたためアカウントをロックしました",
+    NoSaltValueStoredError: "認証ができませんでした",
+    IncorrectPasswordError: "パスワードまたはユーザー名が間違っています",
+    IncorrectUsernameError: "パスワードまたはユーザー名が間違っています"
+  },
+}) //* passportLocalMongooseの機能がスキーマに組みこまれる
 
 module.exports = mongoose.model("User", userSchema)
