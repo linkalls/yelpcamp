@@ -2,19 +2,9 @@ const express = require("express")
 const router = express.Router({ mergeParams: true }) //* これでidが取れる
 const catchAsync = require("../utils/catchAsync")
 const Campground = require("../models/campground")
-const { reviewSchema } = require("../schemas")
 const Review = require("../models/review")
+const {validateReview} = require("../middleware")
 
-const validateReview = (req, res, next) => {
-  //* ミドルウェア
-  const { error } = reviewSchema.validate(req.body) //* validatedじゃないよ
-  if (error) {
-    const msg = error.details.map((detail) => detail.message).join(",")
-    throw new ExpressError(msg, 400)
-  } else {
-    next()
-  }
-}
 
 router.post(
   "/",
