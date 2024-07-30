@@ -7,7 +7,11 @@ const campgrounds = require("../controllers/campgrounds")
 router
   .route("/")
   .get(catchAsync(campgrounds.index)) // パスを指定しない
-  .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
+  // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
+.post((req,res)=>{
+  console.log(req.body) //* url-encodedにしてたから　{}
+  res.send("受け付けました")
+})
 
 router.get("/new", isLoggedIn, campgrounds.renderNewForm)
 
