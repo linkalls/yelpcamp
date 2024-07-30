@@ -35,7 +35,16 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params
-    const campground = await Campground.findById(id).populate("reviews").populate("author") //*　なかったらnullになっちゃう
+    const campground = await Campground.findById(id)
+    .populate(
+      {
+      path: "reviews",
+    populate: { //* reviewインスタンスに対して
+      path: "author"
+    }
+    }
+  ).populate("author") 
+  console.log(campground)
     if (!campground) {
       req.flash("error", "このキャンプ場は見つかりませんでした")
       return res.redirect("/campgrounds")
