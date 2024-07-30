@@ -20,7 +20,7 @@ module.exports.showCampground = async (req, res) => {
       },
     })
     .populate("author")
-  console.log(campground)
+  // console.log(campground)
   if (!campground) {
     req.flash("error", "このキャンプ場は見つかりませんでした")
     return res.redirect("/campgrounds")
@@ -31,11 +31,11 @@ module.exports.showCampground = async (req, res) => {
 module.exports.createCampground = async (req, res) => {
 
   const campground = new Campground(req.body.campground)
-  console.log(req.user._id)
+  // console.log(req.user._id)
  campground.images = req.files.map((f) => ({url: f.path,filename: f.filename}))
   campground.author = req.user._id
   await campground.save()
-  console.log(campground)
+  // console.log(campground)
   req.flash("success", "新しいキャンプ場を登録しました")
   res.redirect(`/campgrounds/${campground._id}`)
 }
@@ -52,14 +52,13 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateCampground = async (req, res) => {
   const { id } = req.params
-  const campground = await Campground.findById(id)
-  if (!campground.author.equals(req.user._id)) {
-    req.flash("error", "更新する権限がありません")
-    return res.redirect(`/campgrounds/${campground._id}`)
-  }
-  const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
+  const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
+  const imgs = req.files.map((f) => ({url: f.path,filename: f.filename}))
+  campground.images.push(...imgs) //* pushで配列そのままは無理
+  // console.log(...imgs)
+ await campground.save()
   req.flash("success", "キャンプ場を更新しました")
-  res.redirect(`/campgrounds/${camp._id}`)
+  res.redirect(`/campgrounds/${campground._id}`)
 }
 
 module.exports.deleteCampground = async (req, res) => {

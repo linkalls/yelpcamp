@@ -26,11 +26,11 @@ const seedDb = async () => {
       title: `${sample(descriptors)}・${sample(places)}`, //* []やなくて()だよ
       images: [
         {
-          url: "https://res.cloudinary.com/dvq2vgsms/image/upload/v1722353330/YelpCamp/u3qofzmsturzcrbpuum6.png",
+          url: "https://image.itmedia.co.jp/news/articles/2307/24/my_0724twitter05.jpg",
           filename: "YelpCamp/u3qofzmsturzcrbpuum6",
         },
         {
-          url: "https://res.cloudinary.com/dvq2vgsms/image/upload/v1722353331/YelpCamp/wviabfyvszrakbckdn43.png",
+          url: "https://cdn.mainichi.jp/vol1/2023/10/23/20231023k0000m040247000p/8.jpg",
           filename: "YelpCamp/wviabfyvszrakbckdn43",
         },
       ],

@@ -3,7 +3,7 @@
 <div class="row">
   <h1 class="text-center">キャンプ場の編集</h1>
   <div class="offset-3 col-6">
-    <form action="/campgrounds/<%= campground._id %>?_method=put" method="post" novalidate class="validated-form">
+    <form action="/campgrounds/<%= campground._id %>?_method=put" method="post" novalidate class="validated-form" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="title" class="form-label">タイトル</label>
         <input type="text" name="campground[title]" id="title" placeholder="タイトル" class="form-control" value="<%= campground.title %>" required />
@@ -15,13 +15,6 @@
       <div class="mb-3">
         <label for="location" class="form-label">場所</label>
         <input type="text" name="campground[location]" id="location" placeholder="場所" class="form-control" value="<%= campground.location %>" required />
-        <div class="valid-feedback">
-          OK!
-         </div>
-      </div>
-      <div class="mb-3">
-        <label for="image" class="form-label">画像url</label>
-        <input type="text" name="campground[image]" id="image" placeholder="image" class="form-control" value="<%= campground.image %>" required />
         <div class="valid-feedback">
           OK!
          </div>
@@ -44,7 +37,13 @@
           OK!
          </div>
       </div>
-
+      <div class="mb-3">
+        <label for="image" class="form-label">画像のアップロード</label>
+        <input class="form-control" type="file" name="image" id="image" multiple >
+        <div class="valid-feedback">
+          OK!
+         </div>
+      </div>
       <div class="mb-3">
         <button class="btn btn-info">更新する</button>
       </div>
