@@ -3,13 +3,16 @@ const router = express.Router()
 const catchAsync = require("../utils/catchAsync")
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware")
 const campgrounds = require("../controllers/campgrounds")
+const  multer   =  require ( 'multer' ) 
+const  upload  =  multer ( {  dest : 'uploads/'  } )
 
 router
   .route("/")
   .get(catchAsync(campgrounds.index)) // パスを指定しない
   // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
-.post((req,res)=>{
+.post(upload.single("image"),(req,res)=>{
   console.log(req.body) //* url-encodedにしてたから　{}
+  console.log(req.file)
   res.send("受け付けました")
 })
 
