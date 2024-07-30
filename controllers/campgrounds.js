@@ -36,27 +36,11 @@ module.exports.createCampground = async (req, res) => {
   const campground = new Campground(req.body.campground)
   const geoData = await geocoder
     .forwardGeocode({
-      query: "愛知県名古屋市",
+      query: req.body.campground.location,
       limit: 1,
     })
     .send()
-  console.log(geoData.body.features[0].geometry) //* { type: 'Point', coordinates: [ 136.902403, 35.187295 ] }
-  // features: [
-  //   {
-  //     id: 'place.2451572',
-  //     type: 'Feature',
-  //     place_type: [Array],
-  //     relevance: 0.99,
-  //     properties: [Object],
-  //     text: '名古屋市',
-  //     place_name: '名古屋市, Aichi, Japan',
-  //     matching_place_name: '名古屋市, 愛知県, Japan',
-  //     bbox: [Array],
-  //     center: [Array],
-  //     geometry: [Object],
-  //     context: [Array]
-  //   }
-  // ],
+    res.send(geoData.body.features[0].geometry.coordinates)
   // campground.images = req.files.map((f) => ({ url: f.path, filename: f.filename }))
   // campground.author = req.user._id
   // await campground.save()
