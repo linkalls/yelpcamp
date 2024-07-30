@@ -27,6 +27,7 @@
   </div>
   <div class="col-6">
     <h2>レビュー</h2>
+    <% if (currentUser) { %>
     <form action="/campgrounds/<%= campground._id %>/reviews" method="post" class="mb-3 validated-form" novalidate>
       <div class="mb-3">
         <label for="rating" class="form-label">評価</label>
@@ -39,6 +40,7 @@
       </div>
       <button class="btn btn-success">投稿する</button>
     </form>
+    <% } %> 
     <% for(let review of campground.reviews){ %>
     <div class="card mb-3">
       <div class="card-body">
