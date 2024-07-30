@@ -4,8 +4,7 @@ const catchAsync = require("../utils/catchAsync")
 const ExpressError = require("../utils/ExpressError")
 const Campground = require("../models/campground")
 const { campgroundSchema } = require("../schemas")
-const {isLoggedIn} = require("../middleware")
-
+const { isLoggedIn } = require("../middleware")
 
 const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body)
@@ -25,7 +24,7 @@ router.get(
   })
 )
 
-router.get("/new",isLoggedIn, (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("campgrounds/new")
 })
 
@@ -38,7 +37,7 @@ router.post(
     console.log(req.user._id)
     campground.author = req.user._id
     await campground.save()
-    req.flash("success","新しいキャンプ場を登録しました")
+    req.flash("success", "新しいキャンプ場を登録しました")
     res.redirect(`/campgrounds/${campground._id}`)
   })
 )
@@ -48,9 +47,9 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findById(id).populate("reviews").populate("author") //*　なかったらnullになっちゃう
-    if(!campground){
-      req.flash("error","このキャンプ場は見つかりませんでした")
-     return res.redirect("/campgrounds",)
+    if (!campground) {
+      req.flash("error", "このキャンプ場は見つかりませんでした")
+      return res.redirect("/campgrounds")
     }
     res.render("campgrounds/show", { campground })
   })
@@ -62,9 +61,13 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findById(id)
-    if(!campground){
-      req.flash("error","このキャンプ場は見つかりませんでした")
-     return res.redirect("/campgrounds",)
+    if (!campground) {
+      req.flash("error", "このキャンプ場は見つかりませんでした")
+      return res.redirect("/campgrounds")
+    }
+    if (!campground.author.equals(req.user._id)) {
+      req.flash("error", "更新する権限がありません")
+      return res.redirect(`/campgrounds/${campground._id}`)
     }
     res.render("campgrounds/edit", { campground })
   })
@@ -76,9 +79,14 @@ router.put(
   validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
-    req.flash("success","キャンプ場を更新しました")
-    res.redirect(`/campgrounds/${id}`)
+    const campground = await Campground.findById(id)
+    if (!campground.author.equals(req.user._id)) {
+      req.flash("error", "更新する権限がありません")
+      return res.redirect(`/campgrounds/${campground._id}`)
+    }
+    const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground }) //* スプレッド
+    req.flash("success", "キャンプ場を更新しました")
+    res.redirect(`/campgrounds/${camp._id}`)
   })
 )
 
@@ -88,7 +96,7 @@ router.delete(
   catchAsync(async (req, res) => {
     const { id } = req.params
     await Campground.findByIdAndDelete(id)
-    req.flash("success","キャンプ場を削除しました")
+    req.flash("success", "キャンプ場を削除しました")
     res.redirect("/campgrounds")
   })
 )
