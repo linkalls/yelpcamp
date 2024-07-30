@@ -35,6 +35,8 @@ router.post(
   validateCampground,
   catchAsync(async (req, res) => {
     const campground = new Campground(req.body.campground)
+    console.log(req.user._id)
+    campground.author = req.user._id
     await campground.save()
     req.flash("success","新しいキャンプ場を登録しました")
     res.redirect(`/campgrounds/${campground._id}`)
@@ -45,7 +47,7 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params
-    const campground = await Campground.findById(id).populate("reviews") //*　なかったらnullになっちゃう
+    const campground = await Campground.findById(id).populate("reviews").populate("author") //*　なかったらnullになっちゃう
     if(!campground){
       req.flash("error","このキャンプ場は見つかりませんでした")
      return res.redirect("/campgrounds",)

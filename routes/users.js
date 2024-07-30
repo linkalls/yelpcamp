@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const User = require("../models/user")
 const passport = require("passport")
+const e = require("connect-flash")
 
 router.get("/register", (req, res) => {
   res.render("users/register")
@@ -30,11 +31,16 @@ router.get("/login", (req, res) => {
   res.render("users/login")
 })
 
-router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
-  //* passportが勝手に認証してくれる req.bodyのusernameとpassport見て
-  req.flash("success", "お帰りなさい")
-  res.redirect("/campgrounds")
-})
+router.post(
+  "/login",
+  passport.authenticate("local", { failureFlash: true, failureRedirect: "/login", keepSessionInfo: true }),
+  (req, res) => {
+    req.flash("success", "お帰りなさい")
+    const redirectUrl = req.session.returnTo || "/campgrounds"
+    delete req.session.returnTo
+    res.redirect(redirectUrl)
+  }
+)
 
 router.get("/logout", (req, res) => {
   req.logout(function (err) {
