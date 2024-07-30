@@ -12,6 +12,8 @@ const reviewRouter = require("./routes/reviews")
 const session = require("express-session")
 const flash = require("connect-flash")
 
+
+
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
     useNewUrlParser: true,
