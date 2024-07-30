@@ -25,6 +25,10 @@ router.get(
 )
 
 router.get("/new", (req, res) => {
+ if (!req.isAuthenticated()){ //* ログインしてるかどうか
+req.flash("error","ログインしてください")
+return res.redirect("/login")
+ }
   res.render("campgrounds/new")
 })
 
