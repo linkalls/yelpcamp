@@ -23,6 +23,10 @@ const seedDb = async () => {
     const randomCityIndex = Math.floor(Math.random() * cities.length) //* cities.lengthは300くらいあるから0~300が出る
     const camp = new Campground({
       location: `${cities[randomCityIndex].prefecture}${cities[randomCityIndex].city}`, //* location: '茨城県石岡市',
+      geometry: {
+        type: "Point",
+        coordinates: [cities[randomCityIndex].longitude, cities[randomCityIndex].latitude],
+      },
       title: `${sample(descriptors)}・${sample(places)}`, //* []やなくて()だよ
       images: [
         {
