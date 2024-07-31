@@ -2,8 +2,9 @@
 <div class="offset-3 col-6">
   <div class="alert alert-danger" role="alert">
     <h4 class="alert-heading"><%= err.message %></h4>
-    <p><%= err.stack %></p> <!-- これでスタックとレースが出る よくあるエラーのやつ-->
-    <hr />
-    <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+    <% if (process.env.Node_ENV !== "production") { %>
+    <p><%= err.stack %></p>
+    < <% } %>
+    <!-- これでスタックとレースが出る よくあるエラーのやつ-->
   </div>
 </div>
