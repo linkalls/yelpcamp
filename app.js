@@ -1,8 +1,8 @@
-// if (process.env.Node_ENV !== "production") {
-//   //* 開発の時
-//   require("dotenv").config()
-// }
-require("dotenv").config()
+if (process.env.Node_ENV !== "production") {
+  //* 開発の時
+  require("dotenv").config()
+}
+const helmet = require("helmet")
 const express = require("express")
 const app = express()
 const path = require("path")
@@ -44,6 +44,29 @@ app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
 app.use(express.static(path.join(__dirname, "public")))
 app.use(mongoSanitize())
+app.use(helmet())
+
+const scriptSrcUrls = ["https://api.mapbox.com", "https://cdn.jsdelivr.net"]
+const styleSrcUrls = ["https://api.mapbox.com", "https://cdn.jsdelivr.net"]
+const connectSrcUrls = ["https://api.mapbox.com", "https://*.tiles.mapbox.com", "https://events.mapbox.com"]
+const fontSrcUrls = []
+const imgSrcUrls = [`https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`, "https://images.unsplash.com",]
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      childSrc: ["blob:"],
+      objectSrc: [],
+      imgSrc: ["'self'", "blob:", "data:", ...imgSrcUrls],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  })
+)
 
 const sessionConfig = {
   name: "session",
