@@ -22,6 +22,7 @@ const LocalStrategy = require("passport-local")
 const User = require("./models/user")
 
 const userRoutes = require("./routes/users")
+const mongoSanitize = require("express-mongo-sanitize")
 
 mongoose
   .connect("mongodb://localhost:27017/yelpCamp", {
@@ -42,6 +43,7 @@ app.set("view engine", "ejs")
 app.use(express.urlencoded()) //* formからのpost ミドルウェア
 app.use(methodOverride("_method"))
 app.use(express.static(path.join(__dirname, "public")))
+app.use(mongoSanitize())
 
 const sessionConfig = {
   secret: "mysecret",
